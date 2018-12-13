@@ -24,27 +24,54 @@ public class Main {
 
         JViewer jv = new JViewer(tp);
         ArrayList<Street> intersec= new ArrayList<>();
-        Point coord[] = new Point[9];
+        Point coord[] = new Point[25];
         int distHeight = tp.getHeight()/4;
         int distWidth = tp.getWidth()/4;
+
+
+
         // column 1
+
         coord[0] = new Point(distWidth,distHeight);
         coord[1] = new Point(distWidth,distHeight*2);
         coord[2] = new Point(distWidth,distHeight*3);
+        coord[3] = new Point(distWidth,distHeight*4);
+        coord[4] = new Point(distWidth,0);
+
+
 
         //column 2
-        coord[3] = new Point(distWidth*2,distHeight);
-        coord[4] = new Point(distWidth*2,distHeight*2);
-        coord[5] = new Point(distWidth*2,distHeight*3);
+        coord[5] = new Point(distWidth*2,distHeight);
+        coord[6] = new Point(distWidth*2,distHeight*2);
+        coord[7] = new Point(distWidth*2,distHeight*3);
+        coord[8] = new Point(distWidth*2,distHeight*4);
+        coord[9] = new Point(distWidth*2,0);
 
         // column 3
-        coord[6] = new Point(distWidth*3,distHeight);
-        coord[7] = new Point(distWidth*3,distHeight*2);
-        coord[8] = new Point(distWidth*3,distHeight*3);
+        coord[10] = new Point(distWidth*3,distHeight);
+        coord[11] = new Point(distWidth*3,distHeight*2);
+        coord[12] = new Point(distWidth*3,distHeight*3);
+        coord[13] = new Point(distWidth*3,distHeight*4);
+        coord[14] = new Point(distWidth*3,0);
 
-       for(int i =0; i < 9; i++){
+        //column 0
+        coord[15] = new Point(0,distHeight);
+        coord[16] = new Point(0,distHeight*2);
+        coord[17] = new Point(0,distHeight*3);
+        coord[18] = new Point(0,distHeight*4);
+        coord[19] = new Point(0,0);
+
+        //column 5
+        coord[20] = new Point(distWidth*4,distHeight);
+        coord[21] = new Point(distWidth*4,distHeight*2);
+        coord[22] = new Point(distWidth*4,distHeight*3);
+        coord[23] = new Point(distWidth*4,distHeight*4);
+        coord[24] = new Point(distWidth*4,0);
+
+       for(int i =0; i < 25; i++){
            Intersect n = new Intersect();
            n.setLocation(coord[i]);
+           n.setIcon("");
            tp.addNode(n);
 
            Point dest = new Point(coord[i].getX(), coord[i].getY()-distHeight);
@@ -68,16 +95,16 @@ public class Main {
        }
 
 
-        Point positionTop = new Point(0,distHeight+10);
-        Point positionBottom = new Point(distWidth*4,distHeight*2-10);
-        tp.addNode(positionTop.x, positionTop.y ,new CarInCity(CarInCity.EAST,tp));
-        tp.addNode(positionTop.x,positionTop.y  ,new CarInCity(CarInCity.EAST,tp));
-        tp.addNode(positionTop.x, positionTop.y ,new CarInCity(CarInCity.EAST,tp));
-        tp.addNode(positionTop.x,positionTop.y ,new CarInCity(CarInCity.EAST,tp));
-        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp));
-        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp));
-        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp));
-        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp));
+        Point positionTop = new Point(0,distHeight*2+20);
+        Point positionBottom = new Point(distWidth*4,distHeight*2-20);
+        CarInCity car = new CarInCity(CarInCity.EAST,tp,positionTop);
+        tp.addNode(positionTop.x, positionTop.y ,new  CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x, positionTop.y ,  new CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x, positionTop.y ,  new CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x, positionTop.y ,  new CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x, positionTop.y ,  new CarInCity(CarInCity.EAST,tp,positionTop));
+
+       // tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
         jv.getJTopology().addBackgroundPainter(new BackgroundPainter(intersec));
 
 

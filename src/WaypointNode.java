@@ -8,7 +8,7 @@ import java.util.Queue;
  * This type of Node can move over a sequence of destinations,
  * specified through the addDestination() method.
  */
-public class WayPointNode extends Node {
+public class WaypointNode extends Node {
     Queue<Point> destinations = new LinkedList<Point>();
     double speed = 1;
 
@@ -18,11 +18,14 @@ public class WayPointNode extends Node {
             Point dest = destinations.peek();
             if (distance(dest) > speed) {
                 setDirection(dest);
+                System.out.println("destination : " + dest);
                 move(speed);
             }else{
+
                 setLocation(dest);
                 destinations.poll();
                 onArrival();
+
             }
         }
     }
