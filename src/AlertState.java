@@ -12,14 +12,14 @@ public class AlertState implements StateCar {
     }
     @Override
     public void action(CarInCity context) {
-        double random = Math.random();
+       /* double random = Math.random();
 
         if(random < 0.0001){ // 0.001 is a good testing number
             context.speed = 0;
             context.setColor(Color.black);
             context.setState(new BreakdownState());
 
-        }
+        }*/
     }
 
     @Override
@@ -32,11 +32,12 @@ public class AlertState implements StateCar {
                 context.speed = 0;
                 context.setState(new BreakdownState());
             }
+            else {
+                context.listBreakDown.addAlert(interact.getLocation());
+            }
         }
         else if (context.getDirection() !=  interact.getDirection() ){
-            System.out.println("send");
-
-            context.send(interact, "yo");
+            context.send(interact, context.listBreakDown);
         }
 
 
@@ -51,6 +52,7 @@ public class AlertState implements StateCar {
     public void computeDir(CarInCity car) {
         Point inter = car.nextIntersect.getLocation();
         Point nextInter= null ;
+        int temp = car.direction;
         if(car.dir == CarInCity.Dir.Left){
 
             if(car.direction == CarInCity.EAST){
@@ -143,8 +145,11 @@ public class AlertState implements StateCar {
         }
 
         if(car.listBreakDown.isInAlert(inter,nextInter)){
+
             car.cleanDestination();
-            car.setState(new DeviateState(nextInter));
+
+            car.setState(new DeviateState(nextInter,car, car.nextIntersect, car.direction, temp));
+
         }
     }
 
@@ -153,8 +158,7 @@ public class AlertState implements StateCar {
     @Override
     public void interact(CarInCity car, Intersect inter) {
         double dec = Math.random();
-
-        if (dec > 0.75) {
+       if (dec > 0.75) {
 
             car.TurnRight(inter);
             car.nextIntersect = inter;

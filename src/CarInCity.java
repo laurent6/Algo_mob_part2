@@ -1,5 +1,5 @@
 import jbotsim.*;
-import jbotsim.event.SelectionListener;
+
 
 /**
  * Created by lbouquin on 06/12/18.
@@ -20,7 +20,7 @@ public class CarInCity extends WaypointNode{
     public static final double SENSINGRANGE = 70;
     public static final String ICONPATH = "/car.png";
 
-    public static final double ALERTRANGE = 30;
+    public static final double ALERTRANGE = 70;
     public AlertMessage listBreakDown;
     public double nextIntersectW;
     public double nextIntersectH;
@@ -44,8 +44,8 @@ public class CarInCity extends WaypointNode{
         this.nextIntersectH = topo.getHeight()/4;
         this.setLocation(position);
 
-        setCommunicationRange(ALERTRANGE);
-        setSensingRange(SENSINGRANGE);
+
+
         speed = 1.5;//(Math.random() * RANGE) + MINSPEED;
         this.dir = Dir.Straight;
         this.nextIntersect = null;
@@ -60,14 +60,22 @@ public class CarInCity extends WaypointNode{
         }
 
 
-        this.setIcon(ICONPATH);
-        this.setSize(30);
+
 
         state = new NormalState();
         newSpeed = -1;
         this.listBreakDown = new AlertMessage();
+
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.setCommunicationRange(ALERTRANGE);
+        this.setSensingRange(SENSINGRANGE);
+        this.setIcon(ICONPATH);
+        this.setSize(30);
+    }
 
     public void onClock() {
         super.onClock();
@@ -88,7 +96,6 @@ public class CarInCity extends WaypointNode{
     @Override
     public void onSensingIn(Node node) {
         super.onSensingIn(node);
-        this.send( node," yo 2 ");
         if (node instanceof CarInCity) {
             state.onInteract(this, (CarInCity) node);
         } else if (node instanceof Intersect) {

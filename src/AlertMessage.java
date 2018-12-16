@@ -1,5 +1,6 @@
 import jbotsim.Point;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class AlertMessage {
@@ -14,6 +15,7 @@ public class AlertMessage {
         return alerts;
     }
     public boolean isInAlert(Point s, Point e){
+
         Point base = new Point(0,0);
         Point start,end;
         double dist1 = base.distance(s);
@@ -28,11 +30,16 @@ public class AlertMessage {
 
         }
 
+        Rectangle r;
+
+        if( start.x != end.x)
+         r = new Rectangle((int)start.x, (int)start.y-20, (int)(end.x - start.x), 20);
+        else
+            r = new Rectangle((int)start.x-20, (int)start.y, 20, (int)(end.y - start.y));
 
         for(Point p : alerts){
 
-            if( ((end.x-start.x) /(p.x-start.x) ) ==((end.y-start.y) /(p.y-start.y) ) ){
-
+            if( r.contains(new java.awt.Point((int)p.x, (int)p.y))){
                 return true;
             }
         }
@@ -42,9 +49,5 @@ public class AlertMessage {
         ArrayList<Point> getAllAlert = newalerts.getAlerts();
         this.alerts.addAll(getAllAlert);
     }
-    public void afficheA(){
-        for(Point p : alerts){
-            System.out.println(" : "+p);
-        }
-    }
+
 }

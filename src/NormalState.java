@@ -33,9 +33,6 @@ public class NormalState implements StateCar {
                 context.setColor(Color.red);
                 context.listBreakDown.addAlert(interact.getLocation());
             }
-            else if( interact.state instanceof AlertState){
-                context.send(interact, context.listBreakDown);
-            }
             else {
                 context.cleanDestination();
                 context.speed = 0;

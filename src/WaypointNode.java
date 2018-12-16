@@ -32,7 +32,7 @@ public class WaypointNode extends Node {
 
     @Override
     public void onMessage(Message message) {
-        System.out.println(" hey");
+
     }
 
     public void setSpeed(double speed) {
@@ -58,6 +58,6 @@ public class WaypointNode extends Node {
     @Override
     public void onSensingIn(Node node) {
         super.onSensingIn(node);
-            this.send(node, "topo");
+
     }
 }

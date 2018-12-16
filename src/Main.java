@@ -1,19 +1,23 @@
-import jbotsim.LinkResolver;
-import jbotsim.Node;
+import jbotsim.*;
 import jbotsim.Point;
-import jbotsim.Topology;
 import jbotsimx.ui.JViewer;
 
 import java.awt.*;
+import java.awt.Color;
 import java.lang.reflect.Array;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.ArrayList;
+
+import static java.awt.Color.*;
 
 
 /**
  * Created by vichatelain on 29/11/18.
  */
 public class Main {
+
+
+
     public static void main(String[] args) {
 
         // Code
@@ -113,13 +117,20 @@ public class Main {
         tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
         tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
 
+        tp.setDefaultNodeModel(CarInCity.class);
+        //tp.setMessageEngine(new jbotsimx.messaging.DelayMessageEngine(10));
 
         JViewer jv = new JViewer(tp);
 
         jv.getJTopology().addBackgroundPainter(new BackgroundPainter(intersec));
 
-        tp.setDefaultNodeModel(CarInCity.class);
         tp.start();
+
+
+
+
+
+
 
     }
 }
