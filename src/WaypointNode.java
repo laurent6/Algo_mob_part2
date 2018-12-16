@@ -20,10 +20,10 @@ public class WaypointNode extends Node {
                 setDirection(dest);
                 move(speed);
             }else{
-                System.out.println(" arrive : "+ this);
                 setLocation(dest);
                 destinations.poll();
-                onArrival();
+                if(destinations.isEmpty())
+                    onArrival();
 
             }
         }

@@ -45,19 +45,18 @@ public class CarInCity extends WaypointNode implements SelectionListener {
         this.setLocation(position);
         //topo.addSelectionListener(this);
         setCommunicationRange(120);
-        setSensingRange(30);
+        setSensingRange(60);
         speed = 1.5;//(Math.random() * RANGE) + MINSPEED;
         this.dir = Dir.Straight;
         this.nextIntersect = null;
         this.direction = direction;
         if(direction == EAST){
             this.setDirection(0);
-            System.out.println("id " + this.getID());
-           this.addDestination((topo.getWidth()/4),this.getLocation().getY());
+            this.addDestination((topo.getWidth()/4)-15,this.getLocation().getY());
         }
         else if(direction == WEST){
             this.setDirection(Math.PI);
-            this.addDestination(new Point(topo.getWidth()-topo.getWidth()/4,this.getLocation().getY()));
+            this.addDestination(new Point(topo.getWidth()-topo.getWidth()/4+15,this.getLocation().getY()));
         }
 
 
@@ -72,82 +71,79 @@ public class CarInCity extends WaypointNode implements SelectionListener {
     public void computeNextDir(){
 
         Point inter = this.nextIntersect.getLocation();
-        System.out.println(" in left " + this);
         if(this.dir == Dir.Left){
 
             if(this.direction == EAST){
-                System.out.println(" next dir : " + inter.x +" :: " + (inter.y-this.nextIntersectH)+ "/" + this);
-                this.addDestination(inter.x,(inter.y-this.nextIntersectH));
+                this.addDestination(inter.x+20,  inter.y);
+                this.addDestination(inter.x+20 ,(inter.y-this.nextIntersectH+20));
                 this.direction = NORTH;
 
             }
 
             else if( this.direction == WEST){
-
-                this.addDestination(inter.x,(inter.y+this.nextIntersectH));
+                this.addDestination(inter.x-20,  inter.y);
+                this.addDestination(inter.x-20,(inter.y+this.nextIntersectH-20));
                 this.direction = SOUTH;
 
             }
 
             else if(this.direction == NORTH){
-
-                this.addDestination((inter.x-this.nextIntersectW),inter.y);
+                this.addDestination(inter.x,  inter.y-20);
+                this.addDestination((inter.x-this.nextIntersectW+20),inter.y-20);
                 this.direction = WEST;
 
             }
 
             else if(this.direction == SOUTH){
-
-                this.addDestination((inter.x+this.nextIntersectW),inter.y);
+                this.addDestination(inter.x+20,  inter.y+20);
+                this.addDestination((inter.x+this.nextIntersectW-20),inter.y+20);
                 this.direction = EAST;
             }
 
         }
         else if( this.dir == Dir.Right){
             if(this.direction == EAST){
-
-                this.addDestination(inter.x,(inter.y+this.nextIntersectH));
+                this.addDestination(inter.x-20,(inter.y+this.nextIntersectH-20));
                 this.direction = SOUTH;
             }
 
             else if(this.direction == WEST){
 
-                this.addDestination(inter.x,(inter.y-this.nextIntersectH));
+                this.addDestination(inter.x+20,(inter.y-this.nextIntersectH+20));
                 this.direction = NORTH;
             }
 
             else if(this.direction == NORTH){
-
-                this.addDestination((inter.x+this.nextIntersectW),inter.y);
+                this.addDestination((inter.x+this.nextIntersectW-20),inter.y+20);
                 this.direction = EAST;
             }
 
             else if(this.direction == SOUTH){
 
-                this.addDestination((inter.x-this.nextIntersectW),inter.y);
+                this.addDestination((inter.x-this.nextIntersectW+20),inter.y-20);
                 this.direction = WEST;
             }
 
         }
         else{
             if(this.direction == EAST){
-                this.addDestination((inter.x+this.nextIntersectW),inter.y);
+                this.addDestination((inter.x+this.nextIntersectW-20),this.getLocation().getY());
                 this.direction = EAST;
             }
 
             else if(this.direction == WEST){
-                this.addDestination((inter.x-this.nextIntersectW),inter.y);
+                this.addDestination((inter.x-this.nextIntersectW-20),this.getLocation().getY());
                 this.direction = WEST;
             }
 
             else if(this.direction == NORTH){
-                this.addDestination(inter.x,(inter.y-this.nextIntersectH));
+                this.addDestination(this.getLocation().x,(inter.y-this.nextIntersectH-20));
                 this.direction = NORTH;
             }
 
             else if(this.direction == SOUTH ){
 
-                this.addDestination(inter.x,(inter.y+this.nextIntersectH));
+                this.addDestination(this.getLocation().x,(inter.y+this.nextIntersectH+20));
                 this.direction = SOUTH;
             }
 
@@ -156,7 +152,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
 
     public void onClock() {
         super.onClock();
-
+        //this.wrapLocation();
         //state.action(this);
 
 
@@ -177,6 +173,8 @@ public class CarInCity extends WaypointNode implements SelectionListener {
         if (node instanceof CarInCity) {
             //state.onInteract(this, (CarInCity) node);
         } else if (node instanceof Intersect) {
+            this.dir = Dir.Straight;
+            this.nextIntersect = (Intersect) node;
             double dec = Math.random();
 
            if (dec > 0.75) {
@@ -199,7 +197,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
                     this.nextIntersect = (Intersect) node;
                 }
 
-            }
+        }
 
 
 

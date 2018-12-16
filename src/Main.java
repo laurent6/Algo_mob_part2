@@ -20,9 +20,9 @@ public class Main {
         Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         int height = (int)dimension.getHeight();
         int width  = (int)dimension.getWidth();
-        Topology tp = new Topology(1600, 600);
+        Topology tp = new Topology(1300, 600);
         tp.setDefaultNodeModel(CarInCity.class);
-        tp.setClockSpeed(30);
+        // tp.setClockSpeed(30);
 
         ArrayList<Street> intersec= new ArrayList<>();
         Point coord[] = new Point[25];
@@ -69,41 +69,56 @@ public class Main {
         coord[23] = new Point(distWidth*4,distHeight*4);
         coord[24] = new Point(distWidth*4,0);
 
-       for(int i =0; i < 25; i++){
-           Intersect n = new Intersect();
-           n.setLocation(coord[i]);
-           n.setIcon("");
-           tp.addNode(n);
+        for(int i =0; i < 25; i++){
+            Intersect n = new Intersect();
+            n.setLocation(coord[i]);
+            n.setIcon("");
+            tp.addNode(n);
 
-           Point dest = new Point(coord[i].getX(), coord[i].getY()-distHeight);
-           Street s = new Street(coord[i], dest);
-           intersec.add(s);
+            Point dest = new Point(coord[i].getX(), coord[i].getY()-distHeight);
+            Street s = new Street(coord[i], dest);
+            intersec.add(s);
 
-           dest = new Point(coord[i].getX(), coord[i].getY()+distHeight);
-           s = new Street(coord[i], dest);
-           intersec.add(s);
+            dest = new Point(coord[i].getX(), coord[i].getY()+distHeight);
+            s = new Street(coord[i], dest);
+            intersec.add(s);
 
-           dest = new Point(coord[i].getX()+distWidth, coord[i].getY());
-           s = new Street(coord[i], dest);
-           intersec.add(s);
+            dest = new Point(coord[i].getX()+distWidth, coord[i].getY());
+            s = new Street(coord[i], dest);
+            intersec.add(s);
 
-           dest = new Point(coord[i].getX()-distWidth, coord[i].getY());
-           s = new Street(coord[i], dest);
-           intersec.add(s);
+            dest = new Point(coord[i].getX()-distWidth, coord[i].getY());
+            s = new Street(coord[i], dest);
+            intersec.add(s);
 
 
 
-       }
+        }
 
 
         Point positionTop = new Point(0,distHeight*2+20);
         Point positionBottom = new Point(distWidth*4,distHeight*2-20);
-        CarInCity car1 = new  CarInCity(CarInCity.EAST,tp,positionTop);
-        CarInCity car2 = new  CarInCity(CarInCity.EAST,tp,positionTop);
 
-        tp.addNode(positionTop.x+1, positionTop.y , car1);
-        tp.addNode(positionTop.x, positionTop.y ,car2);
-        // tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
+
+        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
+        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
+
+        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
+        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
+        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
+        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
+        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
+        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
+        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
+        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
 
 
         tp.setLinkResolver(new LinkResolver(){
