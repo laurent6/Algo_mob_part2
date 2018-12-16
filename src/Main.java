@@ -106,13 +106,7 @@ public class Main {
         tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
         tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
         tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
-        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
-        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
-        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
-        tp.addNode(positionTop.x+1, positionTop.y , new  CarInCity(CarInCity.EAST,tp,positionTop));
 
-        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
-        tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
         tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
         tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
         tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));

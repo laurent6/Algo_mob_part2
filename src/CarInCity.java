@@ -44,8 +44,8 @@ public class CarInCity extends WaypointNode implements SelectionListener {
         this.nextIntersectH = topo.getHeight()/4;
         this.setLocation(position);
         topo.addSelectionListener(this);
-        setCommunicationRange(120);
-        setSensingRange(60);
+        setCommunicationRange(ALERTRANGE);
+        setSensingRange(SENSINGRANGE);
         speed = 1.5;//(Math.random() * RANGE) + MINSPEED;
         this.dir = Dir.Straight;
         this.nextIntersect = null;
@@ -72,7 +72,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
     public void onClock() {
         super.onClock();
 
-        state.action(this);
+        //state.action(this);
 
 
 
@@ -106,7 +106,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
         if(message.getContent() instanceof AlertMessage){
             this.listBreakDown.copyAlertMessage((AlertMessage)message.getContent());
             this.setColor(Color.red);
-            this.speed = speed/2;
+
             if( !(state  instanceof  AlertState)){
                 this.setState(new AlertState(false));
             }
@@ -126,6 +126,54 @@ public class CarInCity extends WaypointNode implements SelectionListener {
         }
 
     }
+    public void TurnRight( Intersect inter) {
+
+        if (((this.direction == EAST) && inter.getLocation().getY() == this.nextIntersectH * 4) || ((this.direction == WEST) && inter.getLocation().getY() == 0)) {
+                this.dir = Dir.Left;
+        }
+        else if (((this.direction == NORTH) && inter.getLocation().getX() == this.nextIntersectW * 4) || ((this.direction == SOUTH) && inter.getLocation().getX() == 0)) {
+            this.dir = Dir.Left;
+        }
+        else {
+            this.dir = Dir.Right;
+        }
+    }
+
+    public void TurnLeft( Intersect inter) {
+
+        if (((this.direction == EAST) && inter.getLocation().getY() == 0) || ((this.direction == WEST) && inter.getLocation().getY() == this.nextIntersectH * 4)) {
+            this.dir = Dir.Right;
+        }
+        else if (((this.direction == NORTH) && inter.getLocation().getX() == 0) || ((this.direction == SOUTH) && inter.getLocation().getX() == this.nextIntersectW * 4)) {
+            this.dir = Dir.Right;
+        }
+        else {
+            this.dir = Dir.Left;
+        }
+
+    }
+
+    public void goStraight( Intersect inter) {
+
+        if((inter.getLocation().getX() == 0 || inter.getLocation().getY() == 0 )&& this.direction == WEST){
+            this.dir = Dir.Left;
+        }
+        else if((inter.getLocation().getX() == 0  || inter.getLocation().getY() ==   this.nextIntersectH * 4 )&& this.direction == SOUTH){
+            this.dir = Dir.Left;
+        }
+        else if((inter.getLocation().getX() == this.nextIntersectW * 4|| inter.getLocation().getY() ==   this.nextIntersectH * 4 )&& this.direction == EAST){
+            this.dir = Dir.Left;
+        }
+        else if((inter.getLocation().getX() == this.nextIntersectW * 4 || inter.getLocation().getY() ==   0 )&& this.direction == NORTH){
+            this.dir = Dir.Left;
+        }
+
+        else{
+            this.dir = Dir.Right;
+        }
+
+    }
+
 
 
 }

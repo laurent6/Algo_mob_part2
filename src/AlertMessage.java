@@ -27,8 +27,10 @@ public class AlertMessage {
             end = s;
         }
 
+
         for(Point p : alerts){
-            if(p.x >= start.x && p.x <= end.x && p.y >= start.y && p.y < end.y){
+            if(Math.abs(((end.x-start.x)/(end.y-start.y)) -((p.x-start.x)/(p.y-start.y))) < 60){
+                if(p.x <= end.x && p.x >= start.x)
                 return true;
             }
         }

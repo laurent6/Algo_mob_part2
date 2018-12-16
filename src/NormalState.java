@@ -1,11 +1,15 @@
 import jbotsim.Color;
 import jbotsim.Point;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * Created by lbouquin on 01/12/18.
  */
 public class NormalState implements StateCar {
-    @Override
+
 
 
     public void action(CarInCity context) {
@@ -23,7 +27,7 @@ public class NormalState implements StateCar {
     @Override
     public void onInteract(CarInCity context, CarInCity interact) {
         if(interact.state instanceof BreakdownState ){
-            if(context.getDirection() != interact.getDirection() ){
+            if(context.getDirection() - interact.getDirection() < Math.PI/2 ){
                 context.setState(new AlertState(false));
                 context.setColor(Color.red);
                 context.listBreakDown.addAlert(interact.getLocation());
@@ -68,7 +72,7 @@ public class NormalState implements StateCar {
             }
 
             else if(car.direction == CarInCity.NORTH){
-                car.addDestination(inter.x,  inter.y-20);
+                car.addDestination(inter.x-20,  inter.y-20);
                 car.addDestination((inter.x-car.nextIntersectW+20),inter.y-20);
                 car.direction = CarInCity.WEST;
 
@@ -107,50 +111,53 @@ public class NormalState implements StateCar {
         }
         else{
             if(car.direction == CarInCity.EAST){
-                car.addDestination((inter.x+car.nextIntersectW-20),car.getLocation().getY());
+                car.addDestination((inter.x+car.nextIntersectW-20),inter.y+20);
                 car.direction = CarInCity.EAST;
             }
 
             else if(car.direction == CarInCity.WEST){
-                car.addDestination((inter.x-car.nextIntersectW-20),car.getLocation().getY());
+                car.addDestination((inter.x-car.nextIntersectW+20),inter.y-20);
                 car.direction = CarInCity.WEST;
             }
 
             else if(car.direction == CarInCity.NORTH){
-                car.addDestination(car.getLocation().x,(inter.y-car.nextIntersectH-20));
+                System.out.println("rentre + ");
+                car.addDestination(inter.x +20 ,(inter.y-car.nextIntersectH-20));
                 car.direction = CarInCity.NORTH;
             }
 
             else if(car.direction == CarInCity.SOUTH ){
 
-                car.addDestination(car.getLocation().x,(inter.y+car.nextIntersectH+20));
+                car.addDestination(inter.x -20,(inter.y+car.nextIntersectH+20));
                 car.direction = CarInCity.SOUTH;
             }
 
         }
     }
 
+
+
+
+
+
     @Override
     public void interact(CarInCity car, Intersect inter) {
         double dec = Math.random();
 
         if (dec > 0.75) {
-            car.dir = CarInCity.Dir.Left;
+
+            car.TurnRight(inter);
             car.nextIntersect = inter;
 
         }
         else if (dec < 0.25) {
-            car.dir = CarInCity.Dir.Right;
+
+           car.TurnLeft(inter);
+
             car.nextIntersect = inter;
         }
         else {
-            if(inter.getLocation().getX() > 0 && inter.getLocation().getY() >0 &&  car.getLocation().getX() < car.nextIntersectW*4 && car.getLocation().getY() < car.nextIntersectH*4){
-                car.dir = CarInCity.Dir.Straight;
-            }
-            else{
-                car.dir = CarInCity.Dir.Right;
-            }
-
+            car.goStraight(inter);
             car.nextIntersect = inter;
         }
     }

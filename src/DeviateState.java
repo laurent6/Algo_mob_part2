@@ -1,29 +1,40 @@
+import jbotsim.Color;
 import jbotsim.Point;
 
 public class DeviateState implements  StateCar {
 
     public boolean startDev;
     public Point dest;
-    public boolean first;
-    public DeviateState(Point p ){
+    public DeviateState(Point p, CarInCity car ){
         startDev = true;
         dest = p;
-        first = true;
+
+        car.dir = CarInCity.Dir.Straight;
+        this.computeDir(car);
+        System.out.println(" rentre en deviation " + car.getID());
     }
     @Override
     public void action(CarInCity context) {
+        double random = Math.random();
 
+        if(random < 0.0001){ // 0.001 is a good testing number
+            context.speed = 0;
+            context.setColor(Color.black);
+            context.setState(new BreakdownState());
+
+        }
     }
 
     @Override
     public void onInteract(CarInCity context, CarInCity interact) {
         if(interact.state instanceof BreakdownState){
-            if(context.getDirection() == interact.getDirection() ){
+            System.out.println(" rentre meme dir");
+            if(context.getDirection() -  interact.getDirection()  < Math.PI/2){
                 this.setState(new BreakdownState());
             }
 
 
-        }else if (context.getDirection() != interact.getDirection() ){
+        }else if (context.getDirection() - interact.getDirection() > Math.PI/2 ){
             context.send(interact, context.listBreakDown);
         }
     }
@@ -120,29 +131,22 @@ public class DeviateState implements  StateCar {
 
         if(car.listBreakDown.isInAlert(inter,nextInter)){
             car.cleanDestination();
-            car.setState(new DeviateState(nextInter));
-
+            car.setState(new DeviateState(nextInter, car));
         }
 
         else{
             car.addDestination(nextInter);
+            if(dest.distance(nextInter) < 50){
+                this.setState(new AlertState(false));
+            }
         }
-        if(dest.distance(nextInter) < 50){
-            this.setState(new AlertState(false));
-        }
+
 
     }
 
     @Override
     public void interact(CarInCity car, Intersect inter) {
-
-            if(first){
-                car.dir = CarInCity.Dir.Straight;
-
-            }else{
                 car.dir = CarInCity.Dir.Left;
-            }
-
-        car.nextIntersect = inter;
+                car.nextIntersect = inter;
     }
 }
