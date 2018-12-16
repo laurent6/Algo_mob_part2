@@ -21,7 +21,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
     public static final String ICONPATH = "/car.png";
 
     public static final double ALERTRANGE = 60;
-    public Point lastBreakDown;
+    public AlertMessage listBreakDown;
     public double nextIntersectW;
     public double nextIntersectH;
 
@@ -43,7 +43,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
         this.nextIntersectW = topo.getWidth()/4;
         this.nextIntersectH = topo.getHeight()/4;
         this.setLocation(position);
-        //topo.addSelectionListener(this);
+        topo.addSelectionListener(this);
         setCommunicationRange(120);
         setSensingRange(60);
         speed = 1.5;//(Math.random() * RANGE) + MINSPEED;
@@ -65,95 +65,14 @@ public class CarInCity extends WaypointNode implements SelectionListener {
 
         state = new NormalState();
         newSpeed = -1;
-
+        this.listBreakDown = new AlertMessage();
     }
 
-    public void computeNextDir(){
-
-        Point inter = this.nextIntersect.getLocation();
-        if(this.dir == Dir.Left){
-
-            if(this.direction == EAST){
-                this.addDestination(inter.x+20,  inter.y);
-                this.addDestination(inter.x+20 ,(inter.y-this.nextIntersectH+20));
-                this.direction = NORTH;
-
-            }
-
-            else if( this.direction == WEST){
-                this.addDestination(inter.x-20,  inter.y);
-                this.addDestination(inter.x-20,(inter.y+this.nextIntersectH-20));
-                this.direction = SOUTH;
-
-            }
-
-            else if(this.direction == NORTH){
-                this.addDestination(inter.x,  inter.y-20);
-                this.addDestination((inter.x-this.nextIntersectW+20),inter.y-20);
-                this.direction = WEST;
-
-            }
-
-            else if(this.direction == SOUTH){
-                this.addDestination(inter.x+20,  inter.y+20);
-                this.addDestination((inter.x+this.nextIntersectW-20),inter.y+20);
-                this.direction = EAST;
-            }
-
-        }
-        else if( this.dir == Dir.Right){
-            if(this.direction == EAST){
-                this.addDestination(inter.x-20,(inter.y+this.nextIntersectH-20));
-                this.direction = SOUTH;
-            }
-
-            else if(this.direction == WEST){
-
-                this.addDestination(inter.x+20,(inter.y-this.nextIntersectH+20));
-                this.direction = NORTH;
-            }
-
-            else if(this.direction == NORTH){
-                this.addDestination((inter.x+this.nextIntersectW-20),inter.y+20);
-                this.direction = EAST;
-            }
-
-            else if(this.direction == SOUTH){
-
-                this.addDestination((inter.x-this.nextIntersectW+20),inter.y-20);
-                this.direction = WEST;
-            }
-
-        }
-        else{
-            if(this.direction == EAST){
-                this.addDestination((inter.x+this.nextIntersectW-20),this.getLocation().getY());
-                this.direction = EAST;
-            }
-
-            else if(this.direction == WEST){
-                this.addDestination((inter.x-this.nextIntersectW-20),this.getLocation().getY());
-                this.direction = WEST;
-            }
-
-            else if(this.direction == NORTH){
-                this.addDestination(this.getLocation().x,(inter.y-this.nextIntersectH-20));
-                this.direction = NORTH;
-            }
-
-            else if(this.direction == SOUTH ){
-
-                this.addDestination(this.getLocation().x,(inter.y+this.nextIntersectH+20));
-                this.direction = SOUTH;
-            }
-
-        }
-    }
 
     public void onClock() {
         super.onClock();
-        //this.wrapLocation();
-        //state.action(this);
+
+        state.action(this);
 
 
 
@@ -163,7 +82,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
     }
 
     public void onArrival(){
-        this.computeNextDir();
+        state.computeDir(this);
     }
 
     @Override
@@ -171,31 +90,9 @@ public class CarInCity extends WaypointNode implements SelectionListener {
         super.onSensingIn(node);
 
         if (node instanceof CarInCity) {
-            //state.onInteract(this, (CarInCity) node);
+            state.onInteract(this, (CarInCity) node);
         } else if (node instanceof Intersect) {
-            this.dir = Dir.Straight;
-            this.nextIntersect = (Intersect) node;
-            double dec = Math.random();
-
-           if (dec > 0.75) {
-                    this.dir = Dir.Left;
-                    this.nextIntersect = (Intersect) node;
-
-            }
-            else if (dec < 0.25) {
-                this.dir = Dir.Right;
-                this.nextIntersect = (Intersect) node;
-            }
-            else {
-                if(node.getLocation().getX() > 0 && node.getLocation().getY() >0 &&  this.getLocation().getX() < this.nextIntersectW*4 && this.getLocation().getY() < this.nextIntersectH*4){
-                    this.dir = Dir.Straight;
-                }
-                else{
-                    this.dir = Dir.Right;
-                }
-
-                    this.nextIntersect = (Intersect) node;
-                }
+            state.interact(this,(Intersect) node);
 
         }
 
@@ -203,16 +100,16 @@ public class CarInCity extends WaypointNode implements SelectionListener {
 
     }
 
-    public void onSensingOut(Node node) {
-
-    }
-
     public void onMessage(Message message) {
         super.onMessage(message);
 
-        if(message.getContent().equals("alert")){
+        if(message.getContent() instanceof AlertMessage){
+            this.listBreakDown.copyAlertMessage((AlertMessage)message.getContent());
             this.setColor(Color.red);
             this.speed = speed/2;
+            if( !(state  instanceof  AlertState)){
+                this.setState(new AlertState(false));
+            }
         }
     }
 

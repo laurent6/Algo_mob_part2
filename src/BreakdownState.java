@@ -17,4 +17,17 @@ public class BreakdownState implements StateCar {
     public void setState(StateCar state) {
 
     }
+
+    @Override
+    public void computeDir(CarInCity car) {
+
+    }
+
+
+    @Override
+    public void interact(CarInCity car, Intersect inter) {
+
+    }
+
+
 }

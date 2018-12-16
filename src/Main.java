@@ -72,7 +72,7 @@ public class Main {
         for(int i =0; i < 25; i++){
             Intersect n = new Intersect();
             n.setLocation(coord[i]);
-            n.setIcon("");
+           // n.setIcon("");
             tp.addNode(n);
 
             Point dest = new Point(coord[i].getX(), coord[i].getY()-distHeight);

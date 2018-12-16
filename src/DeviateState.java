@@ -1,13 +1,14 @@
 import jbotsim.Point;
 
-/**
- * Created by lbouquin on 01/12/18.
- */
-public class AlertState implements StateCar {
-    public boolean sameDir;
+public class DeviateState implements  StateCar {
 
-    public AlertState(boolean isDir){
-        sameDir= isDir;
+    public boolean startDev;
+    public Point dest;
+    public boolean first;
+    public DeviateState(Point p ){
+        startDev = true;
+        dest = p;
+        first = true;
     }
     @Override
     public void action(CarInCity context) {
@@ -25,8 +26,6 @@ public class AlertState implements StateCar {
         }else if (context.getDirection() != interact.getDirection() ){
             context.send(interact, context.listBreakDown);
         }
-
-
     }
 
     @Override
@@ -119,40 +118,31 @@ public class AlertState implements StateCar {
 
 
 
-            if(car.listBreakDown.isInAlert(inter,nextInter)){
-                car.cleanDestination();
-                car.setState(new DeviateState(nextInter));
+        if(car.listBreakDown.isInAlert(inter,nextInter)){
+            car.cleanDestination();
+            car.setState(new DeviateState(nextInter));
 
         }
-            else{
-                car.addDestination(nextInter);
-            }
+
+        else{
+            car.addDestination(nextInter);
+        }
+        if(dest.distance(nextInter) < 50){
+            this.setState(new AlertState(false));
+        }
+
     }
-
-
 
     @Override
     public void interact(CarInCity car, Intersect inter) {
-        double dec = Math.random();
 
-        if (dec > 0.75) {
-            car.dir = CarInCity.Dir.Left;
-            car.nextIntersect = inter;
-
-        }
-        else if (dec < 0.25) {
-            car.dir = CarInCity.Dir.Right;
-            car.nextIntersect = inter;
-        }
-        else {
-            if(inter.getLocation().getX() > 0 && inter.getLocation().getY() >0 &&  car.getLocation().getX() < car.nextIntersectW*4 && car.getLocation().getY() < car.nextIntersectH*4){
+            if(first){
                 car.dir = CarInCity.Dir.Straight;
-            }
-            else{
-                car.dir = CarInCity.Dir.Right;
+
+            }else{
+                car.dir = CarInCity.Dir.Left;
             }
 
-            car.nextIntersect = inter;
-        }
+        car.nextIntersect = inter;
     }
 }

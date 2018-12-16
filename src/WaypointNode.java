@@ -41,6 +41,10 @@ public class WaypointNode extends Node {
         addDestination(new Point(x, y));
     }
 
+    public void cleanDestination(){
+        destinations.clear();
+    }
+
     public void onArrival(){
     }
 }
