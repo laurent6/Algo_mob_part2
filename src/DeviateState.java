@@ -1,17 +1,19 @@
 import jbotsim.Color;
 import jbotsim.Point;
 
+import java.sql.SQLOutput;
+
 public class DeviateState implements  StateCar {
 
     public boolean startDev;
     public Point dest;
-    public DeviateState(Point p, CarInCity car ){
+    public boolean firstStep;
+    public DeviateState(Point p ){
         startDev = true;
         dest = p;
+        firstStep = true;
+        System.out.println(" rentre dans deviaion");
 
-        car.dir = CarInCity.Dir.Straight;
-        this.computeDir(car);
-        System.out.println(" rentre en deviation " + car.getID());
     }
     @Override
     public void action(CarInCity context) {
@@ -28,13 +30,17 @@ public class DeviateState implements  StateCar {
     @Override
     public void onInteract(CarInCity context, CarInCity interact) {
         if(interact.state instanceof BreakdownState){
-            System.out.println(" rentre meme dir");
-            if(context.getDirection() -  interact.getDirection()  < Math.PI/2){
+
+            if(context.getDirection() ==  interact.getDirection()  ){
+                context.cleanDestination();
+                context.setColor(Color.BLACK);
+                context.speed = 0;
+                context.setState(new BreakdownState());
                 this.setState(new BreakdownState());
             }
 
 
-        }else if (context.getDirection() - interact.getDirection() > Math.PI/2 ){
+        }else if (context.getDirection() !=  interact.getDirection()  ){
             context.send(interact, context.listBreakDown);
         }
     }
@@ -52,28 +58,32 @@ public class DeviateState implements  StateCar {
 
             if(car.direction == CarInCity.EAST){
                 car.addDestination(inter.x+20,  inter.y);
-                nextInter = new Point(inter.x+20 ,(inter.y-car.nextIntersectH+20));
+                nextInter = new Point(inter.x ,(inter.y-car.nextIntersectH));
+                car.addDestination(inter.x+20 ,(inter.y-car.nextIntersectH+20));
                 car.direction = CarInCity.NORTH;
 
             }
 
             else if( car.direction == CarInCity.WEST){
                 car.addDestination(inter.x-20,  inter.y);
-                nextInter = new Point(inter.x-20,(inter.y+car.nextIntersectH-20));
+                nextInter = new Point(inter.x,(inter.y+car.nextIntersectH));
+                car.addDestination(inter.x-20,(inter.y+car.nextIntersectH-20));
                 car.direction = CarInCity.SOUTH;
 
             }
 
             else if(car.direction == CarInCity.NORTH){
                 car.addDestination(inter.x,  inter.y-20);
-                nextInter = new Point((inter.x-car.nextIntersectW+20),inter.y-20);
+                nextInter = new Point((inter.x-car.nextIntersectW),inter.y);
+                car.addDestination((inter.x-car.nextIntersectW+20),inter.y-20);
                 car.direction = CarInCity.WEST;
 
             }
 
             else if(car.direction == CarInCity.SOUTH){
                 car.addDestination(inter.x+20,  inter.y+20);
-                nextInter = new Point((inter.x+car.nextIntersectW-20),inter.y+20);
+                nextInter = new Point((inter.x+car.nextIntersectW),inter.y);
+                car.addDestination((inter.x+car.nextIntersectW-20),inter.y+20);
                 car.direction = CarInCity.EAST;
             }
 
@@ -81,47 +91,55 @@ public class DeviateState implements  StateCar {
         else if( car.dir == CarInCity.Dir.Right){
             if(car.direction == CarInCity.EAST){
 
-                nextInter = new Point(inter.x-20,(inter.y+car.nextIntersectH-20));
+                nextInter = new Point(inter.x,(inter.y+car.nextIntersectH));
+                car.addDestination(inter.x,(inter.y+car.nextIntersectH));
                 car.direction = CarInCity.SOUTH;
             }
 
             else if(car.direction == CarInCity.WEST){
 
-                nextInter = new Point(inter.x+20,(inter.y-car.nextIntersectH+20));
+                nextInter = new Point(inter.x,(inter.y-car.nextIntersectH));
+                car.addDestination(inter.x+20,(inter.y-car.nextIntersectH+20));
                 car.direction = CarInCity.NORTH;
             }
 
             else if(car.direction == CarInCity.NORTH){
-                nextInter = new Point((inter.x+car.nextIntersectW-20),inter.y+20);
+                nextInter = new Point((inter.x+car.nextIntersectW),inter.y);
+                car.addDestination((inter.x+car.nextIntersectW-20),inter.y+20);
                 car.direction = CarInCity.EAST;
             }
 
             else if(car.direction == CarInCity.SOUTH){
 
-                nextInter = new Point((inter.x-car.nextIntersectW+20),inter.y-20);
+                nextInter = new Point((inter.x-car.nextIntersectW),inter.y);
+                car.addDestination((inter.x-car.nextIntersectW+20),inter.y-20);
                 car.direction = CarInCity.WEST;
             }
 
         }
         else{
             if(car.direction == CarInCity.EAST){
-                nextInter = new Point((inter.x+car.nextIntersectW-20),car.getLocation().getY());
+                nextInter = new Point((inter.x+car.nextIntersectW),inter.y);
+                car.addDestination((inter.x+car.nextIntersectW-20),inter.y);
                 car.direction = CarInCity.EAST;
             }
 
             else if(car.direction == CarInCity.WEST){
-                nextInter = new Point((inter.x-car.nextIntersectW-20),car.getLocation().getY());
+                nextInter = new Point((inter.x-car.nextIntersectW),inter.y);
+                car.addDestination((inter.x-car.nextIntersectW-20),inter.y);
                 car.direction = CarInCity.WEST;
             }
 
             else if(car.direction == CarInCity.NORTH){
-                nextInter = new Point(car.getLocation().x,(inter.y-car.nextIntersectH-20));
+                nextInter = new Point(inter.x,(inter.y-car.nextIntersectH));
+                car.addDestination(inter.x,(inter.y-car.nextIntersectH-20));
                 car.direction = CarInCity.NORTH;
             }
 
             else if(car.direction == CarInCity.SOUTH ){
 
-                nextInter = new Point(car.getLocation().x,(inter.y+car.nextIntersectH+20));
+                nextInter = new Point(inter.x,(inter.y+car.nextIntersectH));
+                car.addDestination(inter.x,(inter.y+car.nextIntersectH+20));
                 car.direction = CarInCity.SOUTH;
             }
 
@@ -131,7 +149,8 @@ public class DeviateState implements  StateCar {
 
         if(car.listBreakDown.isInAlert(inter,nextInter)){
             car.cleanDestination();
-            car.setState(new DeviateState(nextInter, car));
+            this.firstStep = true;
+            this.dest = nextInter;
         }
 
         else{
@@ -146,7 +165,17 @@ public class DeviateState implements  StateCar {
 
     @Override
     public void interact(CarInCity car, Intersect inter) {
-                car.dir = CarInCity.Dir.Left;
+        System.out.println(" dest " + this.dest);
+                if(this.firstStep){
+                    car.dir = CarInCity.Dir.Straight;
+                    firstStep = false;
+                }
+
+                else{
+                    car.dir = CarInCity.Dir.Left;
+                }
+
+
                 car.nextIntersect = inter;
     }
 }

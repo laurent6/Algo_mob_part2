@@ -4,7 +4,7 @@ import jbotsim.event.SelectionListener;
 /**
  * Created by lbouquin on 06/12/18.
  */
-public class CarInCity extends WaypointNode implements SelectionListener {
+public class CarInCity extends WaypointNode{
 
     public  int direction;
     public static final int EAST = 0;
@@ -17,10 +17,10 @@ public class CarInCity extends WaypointNode implements SelectionListener {
     public static final double MAXSPEED = 1.5;
     public static double RANGE = MAXSPEED - MINSPEED;
 
-    public static final double SENSINGRANGE = 100;
+    public static final double SENSINGRANGE = 70;
     public static final String ICONPATH = "/car.png";
 
-    public static final double ALERTRANGE = 60;
+    public static final double ALERTRANGE = 30;
     public AlertMessage listBreakDown;
     public double nextIntersectW;
     public double nextIntersectH;
@@ -43,7 +43,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
         this.nextIntersectW = topo.getWidth()/4;
         this.nextIntersectH = topo.getHeight()/4;
         this.setLocation(position);
-        topo.addSelectionListener(this);
+
         setCommunicationRange(ALERTRANGE);
         setSensingRange(SENSINGRANGE);
         speed = 1.5;//(Math.random() * RANGE) + MINSPEED;
@@ -72,7 +72,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
     public void onClock() {
         super.onClock();
 
-        //state.action(this);
+        state.action(this);
 
 
 
@@ -88,7 +88,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
     @Override
     public void onSensingIn(Node node) {
         super.onSensingIn(node);
-
+        this.send( node," yo 2 ");
         if (node instanceof CarInCity) {
             state.onInteract(this, (CarInCity) node);
         } else if (node instanceof Intersect) {
@@ -102,8 +102,8 @@ public class CarInCity extends WaypointNode implements SelectionListener {
 
     public void onMessage(Message message) {
         super.onMessage(message);
-
         if(message.getContent() instanceof AlertMessage){
+
             this.listBreakDown.copyAlertMessage((AlertMessage)message.getContent());
             this.setColor(Color.red);
 
@@ -117,15 +117,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
         this.state = state;
     }
 
-    @Override
-    public void onSelection(Node node) {
-        if(node instanceof  CarInCity){
-            ( (CarInCity)node).setState(new BreakdownState());
-            ( (CarInCity)node).speed = 0;
-            ( (CarInCity)node).setColor(Color.black);
-        }
 
-    }
     public void TurnRight( Intersect inter) {
 
         if (((this.direction == EAST) && inter.getLocation().getY() == this.nextIntersectH * 4) || ((this.direction == WEST) && inter.getLocation().getY() == 0)) {

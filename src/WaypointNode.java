@@ -1,3 +1,4 @@
+import jbotsim.Message;
 import jbotsim.Node;
 import jbotsim.Point;
 
@@ -29,6 +30,11 @@ public class WaypointNode extends Node {
         }
     }
 
+    @Override
+    public void onMessage(Message message) {
+        System.out.println(" hey");
+    }
+
     public void setSpeed(double speed) {
         this.speed = speed;
     }
@@ -46,5 +52,12 @@ public class WaypointNode extends Node {
     }
 
     public void onArrival(){
+
+    }
+
+    @Override
+    public void onSensingIn(Node node) {
+        super.onSensingIn(node);
+            this.send(node, "topo");
     }
 }

@@ -21,8 +21,7 @@ public class Main {
         int height = (int)dimension.getHeight();
         int width  = (int)dimension.getWidth();
         Topology tp = new Topology(1300, 600);
-        tp.setDefaultNodeModel(CarInCity.class);
-        // tp.setClockSpeed(30);
+
 
         ArrayList<Street> intersec= new ArrayList<>();
         Point coord[] = new Point[25];
@@ -115,22 +114,11 @@ public class Main {
         tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
 
 
-        tp.setLinkResolver(new LinkResolver(){
-            @Override
-            public boolean isHeardBy(Node n1, Node n2) {
-                if ((n1 instanceof Intersect && n2 instanceof CarInCity) ||
-                        (n2 instanceof Intersect && n1 instanceof CarInCity))
-                    return false;
-                return (n1.isWirelessEnabled () && n2.isWirelessEnabled()
-                        && n1.distance(n2) < n1.getCommunicationRange());
-            }
-        });
-        tp.setMessageEngine(new jbotsimx.messaging.DelayMessageEngine(10));
         JViewer jv = new JViewer(tp);
 
         jv.getJTopology().addBackgroundPainter(new BackgroundPainter(intersec));
 
-
+        tp.setDefaultNodeModel(CarInCity.class);
         tp.start();
 
     }

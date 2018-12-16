@@ -16,6 +16,7 @@ public class NormalState implements StateCar {
         double random = Math.random();
 
         if(random < 0.0001){ // 0.001 is a good testing number
+            context.cleanDestination();
             context.speed = 0;
             context.setColor(Color.black);
             context.setState(new BreakdownState());
@@ -27,12 +28,17 @@ public class NormalState implements StateCar {
     @Override
     public void onInteract(CarInCity context, CarInCity interact) {
         if(interact.state instanceof BreakdownState ){
-            if(context.getDirection() - interact.getDirection() < Math.PI/2 ){
+            if(context.getDirection() != interact.getDirection()  ){
                 context.setState(new AlertState(false));
                 context.setColor(Color.red);
                 context.listBreakDown.addAlert(interact.getLocation());
             }
+            else if( interact.state instanceof AlertState){
+                context.send(interact, context.listBreakDown);
+            }
             else {
+                context.cleanDestination();
+                context.speed = 0;
                 context.setState(new BreakdownState());
                 context.setColor(Color.black);
             }
@@ -121,7 +127,7 @@ public class NormalState implements StateCar {
             }
 
             else if(car.direction == CarInCity.NORTH){
-                System.out.println("rentre + ");
+
                 car.addDestination(inter.x +20 ,(inter.y-car.nextIntersectH-20));
                 car.direction = CarInCity.NORTH;
             }

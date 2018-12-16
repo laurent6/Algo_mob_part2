@@ -25,13 +25,18 @@ public class AlertState implements StateCar {
     @Override
     public void onInteract(CarInCity context, CarInCity interact) {
         if(interact.state instanceof BreakdownState){
-            if(context.getDirection() - interact.getDirection() < Math.PI/2){
-                this.setState(new BreakdownState());
+
+            if(context.getDirection() == interact.getDirection()){
+               context.cleanDestination();
+                context.setColor(Color.BLACK);
+                context.speed = 0;
+                context.setState(new BreakdownState());
             }
+        }
+        else if (context.getDirection() !=  interact.getDirection() ){
+            System.out.println("send");
 
-
-        }else if (context.getDirection() - interact.getDirection() > Math.PI/2 ){
-            context.send(interact, context.listBreakDown);
+            context.send(interact, "yo");
         }
 
 
@@ -45,103 +50,101 @@ public class AlertState implements StateCar {
     @Override
     public void computeDir(CarInCity car) {
         Point inter = car.nextIntersect.getLocation();
-        Point nextInter = null;
+        Point nextInter= null ;
         if(car.dir == CarInCity.Dir.Left){
 
             if(car.direction == CarInCity.EAST){
                 car.addDestination(inter.x+20,  inter.y);
-                car.addDestination(inter.x+20 ,(inter.y-car.nextIntersectH+20));
                 nextInter = new Point(inter.x ,(inter.y-car.nextIntersectH));
+                car.addDestination(inter.x+20 ,(inter.y-car.nextIntersectH+20));
                 car.direction = CarInCity.NORTH;
 
             }
 
             else if( car.direction == CarInCity.WEST){
                 car.addDestination(inter.x-20,  inter.y);
-               car.addDestination(inter.x-20,(inter.y+car.nextIntersectH-20));
                 nextInter = new Point(inter.x,(inter.y+car.nextIntersectH));
+                car.addDestination(inter.x-20,(inter.y+car.nextIntersectH-20));
                 car.direction = CarInCity.SOUTH;
 
             }
 
             else if(car.direction == CarInCity.NORTH){
-                car.addDestination(inter.x,  inter.y-20);
-               car.addDestination((inter.x-car.nextIntersectW+20),inter.y-20);
+                car.addDestination(inter.x-20,  inter.y-20);
                 nextInter = new Point((inter.x-car.nextIntersectW),inter.y);
+                car.addDestination((inter.x-car.nextIntersectW+20),inter.y-20);
                 car.direction = CarInCity.WEST;
 
             }
 
             else if(car.direction == CarInCity.SOUTH){
                 car.addDestination(inter.x+20,  inter.y+20);
-               car.addDestination((inter.x+car.nextIntersectW-20),inter.y+20);
                 nextInter = new Point((inter.x+car.nextIntersectW),inter.y);
+                car.addDestination((inter.x+car.nextIntersectW-20),inter.y+20);
                 car.direction = CarInCity.EAST;
             }
 
         }
         else if( car.dir == CarInCity.Dir.Right){
             if(car.direction == CarInCity.EAST){
-
-               car.addDestination(inter.x-20,(inter.y+car.nextIntersectH-20));
+                car.addDestination(inter.x-20,(inter.y+car.nextIntersectH-20));
                 nextInter = new Point(inter.x,(inter.y+car.nextIntersectH));
                 car.direction = CarInCity.SOUTH;
             }
 
             else if(car.direction == CarInCity.WEST){
 
-               car.addDestination(inter.x+20,(inter.y-car.nextIntersectH+20));
+                car.addDestination(inter.x+20,(inter.y-car.nextIntersectH+20));
                 nextInter = new Point(inter.x,(inter.y-car.nextIntersectH));
                 car.direction = CarInCity.NORTH;
             }
 
             else if(car.direction == CarInCity.NORTH){
-               car.addDestination((inter.x+car.nextIntersectW-20),inter.y-20);
                 nextInter = new Point((inter.x+car.nextIntersectW),inter.y);
+                car.addDestination((inter.x+car.nextIntersectW-20),inter.y+20);
                 car.direction = CarInCity.EAST;
             }
 
             else if(car.direction == CarInCity.SOUTH){
 
-               car.addDestination((inter.x-car.nextIntersectW+20),inter.y+20);
                 nextInter = new Point((inter.x-car.nextIntersectW),inter.y);
+                car.addDestination((inter.x-car.nextIntersectW+20),inter.y-20);
                 car.direction = CarInCity.WEST;
             }
 
         }
         else{
             if(car.direction == CarInCity.EAST){
-                car.addDestination((inter.x+car.nextIntersectW-20),inter.y+20);
                 nextInter = new Point((inter.x+car.nextIntersectW),inter.y);
+                car.addDestination((inter.x+car.nextIntersectW-20),inter.y+20);
                 car.direction = CarInCity.EAST;
             }
 
             else if(car.direction == CarInCity.WEST){
-                car.addDestination((inter.x-car.nextIntersectW+20),inter.y-20);
                 nextInter = new Point((inter.x-car.nextIntersectW),inter.y);
+                car.addDestination((inter.x-car.nextIntersectW+20),inter.y-20);
                 car.direction = CarInCity.WEST;
             }
 
             else if(car.direction == CarInCity.NORTH){
-                car.addDestination(inter.x +20 ,(inter.y-car.nextIntersectH-20));
+
                 nextInter = new Point(inter.x  ,(inter.y-car.nextIntersectH));
+                car.addDestination(inter.x +20 ,(inter.y-car.nextIntersectH-20));
                 car.direction = CarInCity.NORTH;
             }
 
             else if(car.direction == CarInCity.SOUTH ){
 
-                car.addDestination(inter.x -20,(inter.y+car.nextIntersectH+20));
                 nextInter = new Point(inter.x ,(inter.y+car.nextIntersectH));
+                car.addDestination(inter.x -20,(inter.y+car.nextIntersectH+20));
                 car.direction = CarInCity.SOUTH;
             }
 
         }
 
-
-
-            if(car.listBreakDown.isInAlert(inter,nextInter)){
-                car.cleanDestination();
-                car.setState(new DeviateState(nextInter,car));
+        if(car.listBreakDown.isInAlert(inter,nextInter)){
+            car.cleanDestination();
+            car.setState(new DeviateState(nextInter));
         }
     }
 
@@ -152,23 +155,22 @@ public class AlertState implements StateCar {
         double dec = Math.random();
 
         if (dec > 0.75) {
-            car.dir = CarInCity.Dir.Left;
+
+            car.TurnRight(inter);
             car.nextIntersect = inter;
 
         }
         else if (dec < 0.25) {
-            car.dir = CarInCity.Dir.Right;
-            car.nextIntersect = inter;
-        }
-        else {
-            if(inter.getLocation().getX() > 0 && inter.getLocation().getY() >0 &&  car.getLocation().getX() < car.nextIntersectW*4 && inter.getLocation().getY() < car.nextIntersectH*4){
-                car.dir = CarInCity.Dir.Straight;
-            }
-            else{
-                car.dir = CarInCity.Dir.Right;
-            }
+
+            car.TurnLeft(inter);
 
             car.nextIntersect = inter;
         }
+        else {
+            car.goStraight(inter);
+            car.nextIntersect = inter;
+        }
+
+
     }
 }

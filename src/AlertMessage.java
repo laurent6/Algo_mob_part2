@@ -25,12 +25,14 @@ public class AlertMessage {
         else{
             start = e;
             end = s;
+
         }
 
 
         for(Point p : alerts){
-            if(Math.abs(((end.x-start.x)/(end.y-start.y)) -((p.x-start.x)/(p.y-start.y))) < 60){
-                if(p.x <= end.x && p.x >= start.x)
+
+            if( ((end.x-start.x) /(p.x-start.x) ) ==((end.y-start.y) /(p.y-start.y) ) ){
+
                 return true;
             }
         }
@@ -39,5 +41,10 @@ public class AlertMessage {
     public void copyAlertMessage(AlertMessage newalerts){
         ArrayList<Point> getAllAlert = newalerts.getAlerts();
         this.alerts.addAll(getAllAlert);
+    }
+    public void afficheA(){
+        for(Point p : alerts){
+            System.out.println(" : "+p);
+        }
     }
 }
