@@ -18,10 +18,9 @@ public class WaypointNode extends Node {
             Point dest = destinations.peek();
             if (distance(dest) > speed) {
                 setDirection(dest);
-                System.out.println("destination : " + dest);
                 move(speed);
             }else{
-
+                System.out.println(" arrive : "+ this);
                 setLocation(dest);
                 destinations.poll();
                 onArrival();

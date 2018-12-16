@@ -6,7 +6,7 @@ import jbotsim.event.SelectionListener;
  */
 public class CarInCity extends WaypointNode implements SelectionListener {
 
-    public static int direction;
+    public  int direction;
     public static final int EAST = 0;
     public static final int WEST = 1;
     public static final int SOUTH = 2;
@@ -39,18 +39,21 @@ public class CarInCity extends WaypointNode implements SelectionListener {
     public double newSpeed;
 
     public CarInCity(int direction, Topology topo, Point position){
-        super();
+
         this.nextIntersectW = topo.getWidth()/4;
         this.nextIntersectH = topo.getHeight()/4;
         this.setLocation(position);
-        topo.addSelectionListener(this);
-        speed = (Math.random() * RANGE) + MINSPEED;
+        //topo.addSelectionListener(this);
+        setCommunicationRange(120);
+        setSensingRange(30);
+        speed = 1.5;//(Math.random() * RANGE) + MINSPEED;
         this.dir = Dir.Straight;
         this.nextIntersect = null;
         this.direction = direction;
         if(direction == EAST){
             this.setDirection(0);
-            this.addDestination((topo.getWidth()/4),this.getLocation().getY());
+            System.out.println("id " + this.getID());
+           this.addDestination((topo.getWidth()/4),this.getLocation().getY());
         }
         else if(direction == WEST){
             this.setDirection(Math.PI);
@@ -60,7 +63,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
 
         this.setIcon(ICONPATH);
         this.setSize(30);
-        this.setSensingRange(SENSINGRANGE);
+
         state = new NormalState();
         newSpeed = -1;
 
@@ -69,9 +72,11 @@ public class CarInCity extends WaypointNode implements SelectionListener {
     public void computeNextDir(){
 
         Point inter = this.nextIntersect.getLocation();
+        System.out.println(" in left " + this);
         if(this.dir == Dir.Left){
 
             if(this.direction == EAST){
+                System.out.println(" next dir : " + inter.x +" :: " + (inter.y-this.nextIntersectH)+ "/" + this);
                 this.addDestination(inter.x,(inter.y-this.nextIntersectH));
                 this.direction = NORTH;
 
@@ -174,7 +179,7 @@ public class CarInCity extends WaypointNode implements SelectionListener {
         } else if (node instanceof Intersect) {
             double dec = Math.random();
 
-            if (dec > 0.75) {
+           if (dec > 0.75) {
                     this.dir = Dir.Left;
                     this.nextIntersect = (Intersect) node;
 
@@ -196,15 +201,12 @@ public class CarInCity extends WaypointNode implements SelectionListener {
 
             }
 
-         //   this.dir  =Dir.Left;
-      //  this.nextIntersect = (Intersect) node;
+
 
     }
 
     public void onSensingOut(Node node) {
-        super.onSensingOut(node);
-        if( node instanceof CarInCity)
-            state.onInteract(this, (CarInCity) node);
+
     }
 
     public void onMessage(Message message) {

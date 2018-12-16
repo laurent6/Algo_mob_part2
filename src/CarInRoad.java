@@ -8,7 +8,7 @@ import jbotsim.Point;
  */
 public class CarInRoad extends Node{
 
-    public static int direction;
+    public  int direction;
     public static final int EAST = 0;
     public static final int WEST = 1;
 

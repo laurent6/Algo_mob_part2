@@ -1,3 +1,4 @@
+import jbotsim.LinkResolver;
 import jbotsim.Node;
 import jbotsim.Point;
 import jbotsim.Topology;
@@ -21,8 +22,8 @@ public class Main {
         int width  = (int)dimension.getWidth();
         Topology tp = new Topology(1600, 600);
         tp.setDefaultNodeModel(CarInCity.class);
+        tp.setClockSpeed(30);
 
-        JViewer jv = new JViewer(tp);
         ArrayList<Street> intersec= new ArrayList<>();
         Point coord[] = new Point[25];
         int distHeight = tp.getHeight()/4;
@@ -97,14 +98,27 @@ public class Main {
 
         Point positionTop = new Point(0,distHeight*2+20);
         Point positionBottom = new Point(distWidth*4,distHeight*2-20);
-        CarInCity car = new CarInCity(CarInCity.EAST,tp,positionTop);
-        tp.addNode(positionTop.x, positionTop.y ,new  CarInCity(CarInCity.EAST,tp,positionTop));
-        tp.addNode(positionTop.x, positionTop.y ,  new CarInCity(CarInCity.EAST,tp,positionTop));
-        tp.addNode(positionTop.x, positionTop.y ,  new CarInCity(CarInCity.EAST,tp,positionTop));
-        tp.addNode(positionTop.x, positionTop.y ,  new CarInCity(CarInCity.EAST,tp,positionTop));
-        tp.addNode(positionTop.x, positionTop.y ,  new CarInCity(CarInCity.EAST,tp,positionTop));
+        CarInCity car1 = new  CarInCity(CarInCity.EAST,tp,positionTop);
+        CarInCity car2 = new  CarInCity(CarInCity.EAST,tp,positionTop);
 
-       // tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
+        tp.addNode(positionTop.x+1, positionTop.y , car1);
+        tp.addNode(positionTop.x, positionTop.y ,car2);
+        // tp.addNode(positionBottom.x, positionBottom.y ,new CarInCity(CarInCity.WEST,tp,positionBottom));
+
+
+        tp.setLinkResolver(new LinkResolver(){
+            @Override
+            public boolean isHeardBy(Node n1, Node n2) {
+                if ((n1 instanceof Intersect && n2 instanceof CarInCity) ||
+                        (n2 instanceof Intersect && n1 instanceof CarInCity))
+                    return false;
+                return (n1.isWirelessEnabled () && n2.isWirelessEnabled()
+                        && n1.distance(n2) < n1.getCommunicationRange());
+            }
+        });
+        tp.setMessageEngine(new jbotsimx.messaging.DelayMessageEngine(10));
+        JViewer jv = new JViewer(tp);
+
         jv.getJTopology().addBackgroundPainter(new BackgroundPainter(intersec));
 
 
